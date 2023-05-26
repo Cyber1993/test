@@ -1,9 +1,7 @@
 #!groovy
 //  groovy Jenkinsfile
-properties([disableConcurrentBuilds()])
-
-        pipeline  {
+pipeline  {
         agent { 
            label 'main'
-                }    
-                 }
+              }    
+          }
