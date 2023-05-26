@@ -1,7 +1,5 @@
 #!groovy
 //  groovy Jenkinsfile
-pipeline  {
-        agent { 
-           label 'main'
-              }    
-          }
+agent { 
+ label 'main'
+      }
