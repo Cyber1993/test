@@ -23,14 +23,6 @@ pipeline
             {
                 sh 'ls /home/'
             }
-        }
-        stage('Shell3') 
-        {
-            steps 
-            {
-                sh 'echo ubuntu | sudo -S apt install mc'
-            }
-        }
-        
+        }       
     }
 }
