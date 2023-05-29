@@ -10,21 +10,21 @@ pipeline
                 echo 'Hello World 2'
             }
         }
-        stage('Shell') 
+        stage('Shell1') 
         {
             steps 
             {
                 sh 'ls /etc/'
             }
         }
-        stage('Shell') 
+        stage('Shell2') 
         {
             steps 
             {
                 sh 'ls /home/ubuntu/'
             }
         }
-        stage('Shell') 
+        stage('Shell3') 
         {
             steps 
             {
