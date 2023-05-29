@@ -17,5 +17,19 @@ pipeline
                 sh 'ls /etc/'
             }
         }
+        stage('Shell') 
+        {
+            steps 
+            {
+                sh 'ls /home/ubuntu/'
+            }
+        }
+        stage('Shell') 
+        {
+            steps 
+            {
+                sh 'apt install mc'
+            }
+        }
     }
 }
