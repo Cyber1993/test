@@ -14,14 +14,14 @@ pipeline
         {
             steps 
             {
-                sh 'ls /etc/'
+                sh 'ls /etc/netplan'
             }
         }
         stage('Shell2') 
         {
             steps 
             {
-                sh 'ls /home/ubuntu/'
+                sh 'ls /home/'
             }
         }
         stage('Shell3') 
