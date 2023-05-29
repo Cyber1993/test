@@ -28,7 +28,7 @@ pipeline
         {
             steps 
             {
-                sh 'sudo apt install mc'
+                sh 'echo ubuntu | sudo -S apt install mc'
             }
         }
         
