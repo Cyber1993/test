@@ -1,0 +1,67 @@
+pipeline {
+    agent any
+    stages {
+        stage('Install Zabbix Server') {
+            steps {
+                script {
+                    // Install Zabbix Server dependencies
+                    sh 'sudo apt-get update'
+                    sh 'sudo apt-get install -y mysql-server mysql-client apache2 php7.4 php7.4-mysql php7.4-gd php7.4-curl php7.4-mbstring php7.4-bcmath snmpd snmp libsnmp-dev libiksemel-dev libcurl4-gnutls-dev libxml2-dev libssh2-1-dev libopenipmi-dev libevent-dev libpcre3-dev libssl-dev fping
+
+                    // Download Zabbix repository key
+                    sh 'wget https://repo.zabbix.com/zabbix/5.4/ubuntu/pool/main/z/zabbix-release/zabbix-release_5.4-1+bionic_all.deb'
+
+                    // Install Zabbix repository key
+                    sh 'sudo dpkg -i zabbix-release_5.4-1+bionic_all.deb'
+
+                    // Install Zabbix Server and frontend
+                    sh 'sudo apt-get update'
+                    sh 'sudo apt-get install -y zabbix-server-mysql zabbix-frontend-php'
+
+                    // Create Zabbix database and user
+                    sh 'mysql -uroot -e "create database zabbix character set utf8 collate utf8_bin;"'
+                    sh 'mysql -uroot -e "grant all privileges on zabbix.* to zabbix@localhost identified by \'your_password\';"'
+
+                    // Import Zabbix database schema
+                    sh 'zcat /usr/share/doc/zabbix-server-mysql*/create.sql.gz | mysql -uzabbix -p your_password zabbix'
+                }
+            }
+        }
+
+        stage('Configure Zabbix Server') {
+            steps {
+                script {
+                    // Configure Zabbix Server
+                    sh 'sudo sed -i "s/# DBPassword=/DBPassword=your_password/" /etc/zabbix/zabbix_server.conf'
+                    sh 'sudo systemctl restart zabbix-server'
+
+                    // Configure Apache web server
+                    sh 'sudo sed -i "s/DocumentRoot \/var\/www\/html/DocumentRoot \/usr\/share\/zabbix/" /etc/apache2/sites-available/000-default.conf'
+                    sh 'sudo sed -i "s/# php_value date.timezone Europe\/Riga/php_value date.timezone Europe\/Kiev/" /etc/apache2/conf-available/zabbix.conf'
+                    sh 'sudo systemctl restart apache2'
+
+                    // Configure SNMP
+                    sh 'sudo sed -i "s/agentAddress  udp:127.0.0.1:161/#agentAddress  udp:127.0.0.1:161/" /etc/snmp/snmpd.conf'
+                    sh 'sudo systemctl restart snmpd'
+                }
+            }
+        }
+
+        stage('Install Zabbix Agent') {
+            steps {
+                script {
+                    // Install Zabbix Agent
+                    sh 'sudo apt-get install -y zabbix-agent'
+
+                    // Configure Zabbix Agent
+                    sh 'sudo sed -i "s/Server=127.0.0.1/Server=zabbix_server_ip/" /etc/zabbix/zabbix_agentd.conf'
+                    sh 'sudo sed -i "s/ServerActive=127.0.0.1/ServerActive=zabbix_server_ip/" /etc/zabbix/zabbix_agentd.conf'
+                    sh 'sudo sed -i "s/Hostname=Zabbix server/Hostname=your_agent_hostname/" /etc/zabbix/zabbix_agentd.conf'
+
+                    // Restart Zabbix Agent
+                    sh 'sudo systemctl restart zabbix-agent'
+                }
+            }
+        }
+    }
+}
