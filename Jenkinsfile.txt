@@ -10,5 +10,12 @@ pipeline
                 echo 'Hello World 2'
             }
         }
+        stage('Shell') 
+        {
+            steps 
+            {
+                sh 'ls /etc/'
+            }
+        }
     }
 }
