@@ -1,5 +1,14 @@
-#!groovy
-//  groovy Jenkinsfile
-agent { 
- label 'main'
-      }
+pipeline 
+{
+    agent any
+    stages 
+    {
+        stage('Hello') 
+        {
+            steps 
+            {
+                echo 'Hello World'
+            }
+        }
+    }
+}
