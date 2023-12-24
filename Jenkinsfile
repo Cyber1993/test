@@ -16,14 +16,5 @@ pipeline {
                 sh 'ls /home/'
             }
         }
-        stage('start install zabbix_____1') {
-            steps {
-                sh 'mkdir /var/lib/zabbix/'
-                sh 'cd /var/lib/zabbix/'
-                sh 'ln -s /usr/share/zoneinfo/Europe/Kiev localtime'
-                sh "echo 'Europe/Kiev' > timezone"
-                sh 'sudo docker network create zabbix-net'
-            }
-        }
     }
 }
